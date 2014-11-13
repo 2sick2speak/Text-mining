@@ -1,4 +1,5 @@
 source(paste0(getwd(), "/R/data rearrangement/_list stemming.R"))
+source(paste0(getwd(), "/R/data rearrangement/_stop words removal.R"))
 
 # make essay list of Corpus type
 train.corpus  <- essay.raw.data$train$essay
@@ -20,9 +21,9 @@ train.corpus <- mapply(tolower,train.corpus)
 
 # remove stopwords
 # TODO add more words like "it's" 
+# FUCKIN TIME CONSUMING OPERATION 20m+. Better read from file 
 
-#train.corpus  <- tm_map(train.corpus, removeWords, stopwords("en"), lazy=TRUE) # work strange
-#test.corpus  <- tm_map(test.corpus, removeWords, stopwords("en"), lazy=TRUE)
+train.corpus <- lapply(train.corpus, stopWordsRemove, stopwords("SMART"))
 
 # stem words
 

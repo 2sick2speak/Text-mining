@@ -1,8 +1,7 @@
 # header for libraries
 
-require(ggplot2)
 require(tm)
 require(RTextTools)
-
+require(dplyr)
 
  setwd("~/Dropbox/Public/DMTrack/Kaggle-ASAP-AES")

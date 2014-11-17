@@ -44,4 +44,14 @@ sd(residual)
 
 # simple random forest
 
-#pred_forest <- randomForest(domain1_score ~ ., data = train.matrix.tf , ntree = 20)
+#pred_forest <- randomForest(domain1_score ~ ., data = as.data.frame(train.matrix.tf))
+
+# simple svm
+
+pred_svm <- svm(domain1_score ~ ., data = as.data.frame(train.matrix.tf))
+summary(pred_svm)
+result_svm <- predict(pred_svm,as.data.frame(train.matrix.tf))
+residual <- result_svm-train.matrix.tf[,"domain1_score"]
+summary(residual)
+sd(residual)
+

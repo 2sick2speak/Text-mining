@@ -6,11 +6,17 @@ source(paste0(getwd(), "/R/feature engineering/_words counter.R"))
 
 # make essay list of Corpus type
 train.corpus  <- essay.raw.data$train[which (essay.raw.data$train$essay_set == 8),] # use 8 type of essay
-test.corpus   <- essay.raw.data$test[which (essay.raw.data$test$essay_set == 8),]  # use 8 type of essay
+#test.corpus   <- essay.raw.data$test[which (essay.raw.data$test$essay_set == 8),]  # use 8 type of essay
 
 # data preparation
-# TODO play with stopwords dictionary
-train.corpus[,"essay"] <- basicRearragements(train.corpus[,"essay"], stopwords("SMART")) 
+# TODO convert past form into infinitive: did -> do; adverbs: easier -> easy
+# additional stopwords
+
+add.vocabulary <- read.csv(paste0(getwd(), "/data/vocabularies/additional stopwords.txt"))
+add.vocabulary <- as.character(add.vocabulary[1:length(add.vocabulary[,1]), ])
+stop.words.vocabulary <- unique(c(add.vocabulary, stopwords("SMART"))) 
+
+train.corpus[,"essay"] <- basicRearragements(train.corpus[,"essay"], stop.words.vocabulary) 
 #test.corpus[,"essay"]  <- basicRearragements(test.corpus[,"essay"], stopwords("SMART")) 
 
 # count amount of words
@@ -44,7 +50,8 @@ sd(residual)
 
 # simple glm for 1st domain score for tf
 
-pred_glm <- glm(domain1_score ~ ., data = as.data.frame(train.matrix.tf), family = "poisson")
+pred_glm <- glm(domain1_score ~ ., data = as.data.frame(train.matrix.tf), family=quasipoisson(link=log))
+#pred_glm <- glm(domain1_score ~ offset(log(num_words)) + ., as.data.frame(train.matrix.tf),  family=poisson(link=log) )
 summary(pred_glm)
 result_glm <- predict(pred_glm,as.data.frame(train.matrix.tf))
 residual <- result_glm-train.matrix.tf[,"domain1_score"]
@@ -62,7 +69,7 @@ summary(pred_svm)
 result_svm <- predict(pred_svm,as.data.frame(train.matrix.tf))
 residual <- result_svm-train.matrix.tf[,"domain1_score"]
 summary(residual)
-sd(residual)
+sd(residual) #1.999288, with custom vocabulary 1.980084
 
 # graph
 plot(train.matrix.tf[,"domain1_score"], result_svm, col = "red")

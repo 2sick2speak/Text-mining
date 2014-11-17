@@ -17,5 +17,25 @@ dtm.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.9)
 dtm.tfidf.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.9, TRUE)
 
 # build train matrixes
-train.matrix.tf <- cbind(train.corpus, dtm.matrix)
-train.matrix.tfidf <- cbind(train.corpus, dtm.tfidf.matrix)
+train.matrix.tf <- cbind(train.corpus$domain1_score, dtm.matrix)
+colnames(train.matrix.tf)[1] <- "domain1_score"
+
+train.matrix.tfidf <- cbind(train.corpus$domain1_score, dtm.tfidf.matrix)
+colnames(train.matrix.tfidf)[1] <- "domain1_score"
+
+# simple models
+
+# simple lm for 1st domain score
+pred_lm <- lm(domain1_score ~ ., data = as.data.frame(train.matrix.tf))
+result_lm <- predict(pred_lm,as.data.frame(train.matrix.tf))
+residual <- result_lm-train.matrix.tf[,"domain1_score"]
+summary(residual)
+sd(residual)
+
+# simple glm for 1st domain score
+
+pred_glm <- glm(domain1_score ~ ., data = as.data.frame(train.matrix.tf))
+result_glm <- predict(pred_glm,as.data.frame(train.matrix.tf))
+residual <- result_glm-train.matrix.tf[,"domain1_score"]
+summary(residual)
+sd(residual)

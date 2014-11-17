@@ -3,5 +3,6 @@
 require(tm)
 require(RTextTools)
 require(dplyr)
-
- setwd("~/Dropbox/Public/DMTrack/Kaggle-ASAP-AES")
+require(randomForest)
+ 
+setwd("~/Dropbox/Public/DMTrack/Kaggle-ASAP-AES")

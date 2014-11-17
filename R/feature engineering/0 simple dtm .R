@@ -2,12 +2,12 @@
 
 dtm <- DocumentTermMatrix(Corpus(VectorSource(train.corpus[,"essay"])))
 
+# tf - idf term frequency
+dtm.tfidf <- weightTfIdf(dtm)
+
 # erase terms with more than 90% of sparsity
 
 dtm <- removeSparseTerms(dtm,0.9)
-
-# tf - idf term frequency
-dtm.tfidf <- weightTfIdf(dtm)
 
 # TODO erase coorelated terms
 # create dtm matrix

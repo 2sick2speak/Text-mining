@@ -16,14 +16,15 @@ basicRearragements <- function(data, dictionary){
   
   # remove stopwords
   # FUCKIN TIME CONSUMING OPERATION 20m+ for 8k texts. Better read from file 
-  # FIXIT 
-  # data <- as.matrix(lapply(data, stopWordsRemove, dictionary))[,1]
+  data <- as.character(lapply(data, stopWordsRemove, dictionary))
     
   # stem words
   data <- mapply(stemmingToBigStrings, data)
   
   # erase whitespaces  
   data <- mapply(gsub, "\\s+"," ",data)
+  
+  return (data)
   
 }
 

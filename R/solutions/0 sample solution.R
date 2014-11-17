@@ -9,7 +9,8 @@ train.corpus  <- essay.raw.data$train[which (essay.raw.data$train$essay_set == 8
 #test.corpus   <- essay.raw.data$test[which (essay.raw.data$test$essay_set == 8),]  # use 8 type of essay
 
 # data preparation
-# TODO convert past form into infinitive: did -> do; adverbs: easier -> easy
+# TODO convert past form into infinitive: did -> do; adjective: easier -> easy
+# TODO erase transition words https://github.com/Gxav73/Gxav_Sol_ASAP_round2/blob/master/transition_words.csv
 # additional stopwords
 
 add.vocabulary <- read.csv(paste0(getwd(), "/data/vocabularies/additional stopwords.txt"))

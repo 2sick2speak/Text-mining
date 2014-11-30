@@ -1,6 +1,7 @@
 source(paste0(getwd(), "/R/libraries.R"))
 source(paste0(getwd(), "/R/data processing/read_data.R"))
 source(paste0(getwd(), "/R/data rearrangement/0 basic rearrangement.R"))
+source(paste0(getwd(), "/R/data rearrangement/1 popular words counter.R"))
 source(paste0(getwd(), "/R/feature engineering/0 simple dtm.R"))
 source(paste0(getwd(), "/R/feature engineering/_words counter.R"))
 
@@ -10,7 +11,7 @@ train.corpus  <- essay.raw.data$train[which (essay.raw.data$train$essay_set == 8
 
 # data preparation
 # TODO convert past form into infinitive: did -> do; adjective: easier -> easy
-# TODO erase transition words https://github.com/Gxav73/Gxav_Sol_ASAP_round2/blob/master/transition_words.csv
+# TODO erase transition words https://github.com/Gxav73/Gxav_Sol_ASAP_round2/blob/master/transition_words.csv 
 # additional stopwords
 
 add.vocabulary <- read.csv(paste0(getwd(), "/data/vocabularies/additional stopwords.txt"))
@@ -28,12 +29,21 @@ row.names(nwords) <- NULL
 dtm.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.90)
 #dtm.tfidf.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.9, TRUE)
 
+# count popular words
+
+popwords <- as.matrix(mapply(countPopWords, list(colnames(dtm.matrix)), train.corpus$essay))
+unpopwords <- mapply(length, strsplit(train.corpus$essay, " ")) - popwords
+
 # build train matrixes
 train.matrix.tf <- cbind(nwords, dtm.matrix)
+train.matrix.tf <- cbind(popwords, train.matrix.tf)
+train.matrix.tf <- cbind(unpopwords, train.matrix.tf)
 train.matrix.tf <- cbind(train.corpus$domain1_score, train.matrix.tf)
 
 colnames(train.matrix.tf)[1] <- "domain1_score"
-colnames(train.matrix.tf)[2] <- "num_words" 
+colnames(train.matrix.tf)[2] <- "unpopwords"
+colnames(train.matrix.tf)[3] <- "popwords"
+colnames(train.matrix.tf)[4] <- "num_words" 
 
 
 #train.matrix.tfidf <- cbind(train.corpus$domain1_score, dtm.tfidf.matrix)

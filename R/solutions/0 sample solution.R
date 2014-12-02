@@ -29,7 +29,6 @@ row.names(nwords) <- NULL
 
 # create tf and tf-idf dtm
 dtm.matrix <- as.matrix(nGramsMatrix (train.corpus[,"essay"], ngrams_number = 1, sparseness = 0.90))
-#dtm.tfidf.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.9, TRUE)
 
 # count popular words
 
@@ -37,12 +36,15 @@ popwords <- as.matrix(mapply(countPopWords, list(colnames(dtm.matrix)), train.co
 unpopwords <- mapply(length, strsplit(train.corpus$essay, " ")) - popwords
 
 
-# create 2-gram matrix
+# create n-gram matrixes
 
-ngram.matrix <- nGramsMatrix(train.corpus[,"essay"], ngrams_number = 2)
+bigram.matrix <- as.matrix(nGramsMatrix(train.corpus[,"essay"], ngrams_number = 2, sparseness = 0.98))
+trigram.matrix <- as.matrix(nGramsMatrix(train.corpus[,"essay"], ngrams_number = 3, sparseness = 0.99))
 
 # build train matrixes
-train.matrix.tf <- cbind(nwords, dtm.matrix)
+train.matrix.tf <- cbind(bigram.matrix, trigram.matrix)
+train.matrix.tf <- cbind(dtm.matrix, train.matrix.tf )
+train.matrix.tf <- cbind(nwords, train.matrix.tf)
 train.matrix.tf <- cbind(popwords, train.matrix.tf)
 train.matrix.tf <- cbind(unpopwords, train.matrix.tf)
 train.matrix.tf <- cbind(train.corpus$domain1_score, train.matrix.tf)

@@ -4,6 +4,15 @@ nGramsMatrix <- function(data, ngrams_number = 2){
   df <- as.data.frame(data)
   myCorpus <- Corpus(VectorSource(df$data))
   ngramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = ngrams_number, max = ngrams_number))
-  tdm <- TermDocumentMatrix(myCorpus, control = list(tokenize = ngramTokenizer))
-  return (tdm)
+  
+  # cheat for RWeka parallel package http://stackoverflow.com/questions/17703553/bigrams-instead-of-single-words-in-termdocument-matrix-using-r-and-rweka
+  options(mc.cores=1)
+  
+  # create n-gram dtm
+  dtm <- DocumentTermMatrix(myCorpus, control = list(tokenize = ngramTokenizer))
+  
+  #create matrix
+  dtm.matrix <- as.matrix(dtm)
+  
+  return (dtm.matrix)
 }

@@ -1,9 +1,12 @@
 source(paste0(getwd(), "/R/libraries.R"))
 source(paste0(getwd(), "/R/data processing/read_data.R"))
 source(paste0(getwd(), "/R/data rearrangement/0 basic rearrangement.R"))
-source(paste0(getwd(), "/R/data rearrangement/1 popular words counter.R"))
 source(paste0(getwd(), "/R/feature engineering/0 simple dtm.R"))
 source(paste0(getwd(), "/R/feature engineering/_words counter.R"))
+source(paste0(getwd(), "/R/feature engineering/1 popular words counter.R"))
+source(paste0(getwd(), "/R/feature engineering/2 n grams.R"))
+
+
 
 # make essay list of Corpus type
 train.corpus  <- essay.raw.data$train[which (essay.raw.data$train$essay_set == 8),] # use 8 type of essay
@@ -33,6 +36,11 @@ dtm.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.90)
 
 popwords <- as.matrix(mapply(countPopWords, list(colnames(dtm.matrix)), train.corpus$essay))
 unpopwords <- mapply(length, strsplit(train.corpus$essay, " ")) - popwords
+
+
+# create 2-gram matrix
+
+ngram.matrix <- nGramsMatrix(train.corpus[,"essay"])
 
 # build train matrixes
 train.matrix.tf <- cbind(nwords, dtm.matrix)

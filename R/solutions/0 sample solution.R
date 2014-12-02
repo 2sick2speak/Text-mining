@@ -1,7 +1,6 @@
 source(paste0(getwd(), "/R/libraries.R"))
 source(paste0(getwd(), "/R/data processing/read_data.R"))
 source(paste0(getwd(), "/R/data rearrangement/0 basic rearrangement.R"))
-source(paste0(getwd(), "/R/feature engineering/0 simple dtm.R"))
 source(paste0(getwd(), "/R/feature engineering/_words counter.R"))
 source(paste0(getwd(), "/R/feature engineering/1 popular words counter.R"))
 source(paste0(getwd(), "/R/feature engineering/2 n grams.R"))
@@ -29,7 +28,7 @@ nwords <- as.matrix(mapply(wordsCounter, train.corpus[,"essay"]))
 row.names(nwords) <- NULL
 
 # create tf and tf-idf dtm
-dtm.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.90)
+dtm.matrix <- as.matrix(nGramsMatrix (train.corpus[,"essay"], ngrams_number = 1, sparseness = 0.90))
 #dtm.tfidf.matrix <- createDtmMatrix (train.corpus[,"essay"], 0.9, TRUE)
 
 # count popular words
@@ -40,7 +39,7 @@ unpopwords <- mapply(length, strsplit(train.corpus$essay, " ")) - popwords
 
 # create 2-gram matrix
 
-ngram.matrix <- nGramsMatrix(train.corpus[,"essay"])
+ngram.matrix <- nGramsMatrix(train.corpus[,"essay"], ngrams_number = 2)
 
 # build train matrixes
 train.matrix.tf <- cbind(nwords, dtm.matrix)

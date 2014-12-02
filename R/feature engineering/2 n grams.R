@@ -1,6 +1,6 @@
 # count n-grams (data - vector of texts; ngrams_number  - type of n-gram, default - 2 )
 
-nGramsMatrix <- function(data, ngrams_number = 2){
+nGramsMatrix <- function(data, sparseness = 1, ngrams_number = 2, tfidf = FALSE){
   df <- as.data.frame(data)
   myCorpus <- Corpus(VectorSource(df$data))
   ngramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = ngrams_number, max = ngrams_number))
@@ -11,8 +11,11 @@ nGramsMatrix <- function(data, ngrams_number = 2){
   # create n-gram dtm
   dtm <- DocumentTermMatrix(myCorpus, control = list(tokenize = ngramTokenizer))
   
-  #create matrix
-  dtm.matrix <- as.matrix(dtm)
+  # tf - idf term frequency   
+  if (tfidf == TRUE) dtm <- weightTfIdf(dtm)
+  
+  # erase terms with more than N% of sparseness
+  if (sparseness < 1 && sparseness > 0) dtm <- removeSparseTerms(dtm, sparseness)
   
   return (dtm.matrix)
 }

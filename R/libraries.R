@@ -8,5 +8,7 @@ require(RWeka)
 require(tau)
 require(e1071) 
 require(openNLP)
+require(topicmodels)
+
 
 setwd("~/Dropbox/Public/DMTrack/Kaggle-ASAP-AES")

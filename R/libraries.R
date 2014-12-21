@@ -7,5 +7,6 @@ require(randomForest)
 require(RWeka)
 require(tau)
 require(e1071) 
+require(openNLP)
 
 setwd("~/Dropbox/Public/DMTrack/Kaggle-ASAP-AES")

@@ -54,10 +54,6 @@ colnames(train.matrix.tf)[2] <- "unpopwords"
 colnames(train.matrix.tf)[3] <- "popwords"
 colnames(train.matrix.tf)[4] <- "num_words" 
 
-
-#train.matrix.tfidf <- cbind(train.corpus$domain1_score, dtm.tfidf.matrix)
-#colnames(train.matrix.tfidf)[1] <- "domain1_score"
-
 # simple models
 
 # simple lm for 1st domain score for tf
@@ -89,7 +85,7 @@ summary(pred_svm)
 result_svm <- predict(pred_svm,as.data.frame(train.matrix.tf))
 residual <- result_svm-train.matrix.tf[,"domain1_score"]
 summary(residual)
-sd(residual) #1.999288, with custom vocabulary 1.980084
+sd(residual) #1.999288, with custom vocabulary 1.980084 # 1.933649 without n-gram
 
 # graph
 plot(train.matrix.tf[,"domain1_score"], result_svm, col = "red")

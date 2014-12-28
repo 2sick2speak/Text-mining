@@ -11,4 +11,4 @@ require(openNLP)
 require(topicmodels)
 
 
-setwd("~/Dropbox/Public/DMTrack/Kaggle-ASAP-AES")
+setwd("~/Dropbox/Public/DMTrack/Text mining")

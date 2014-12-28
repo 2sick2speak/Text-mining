@@ -4,6 +4,8 @@ source(paste0(getwd(), "/R/data rearrangement/0 basic rearrangement.R"))
 source(paste0(getwd(), "/R/feature engineering/_words counter.R"))
 source(paste0(getwd(), "/R/feature engineering/1 popular words counter.R"))
 source(paste0(getwd(), "/R/feature engineering/2 n grams.R"))
+source(paste0(getwd(), "/R/models/0 lda.R"))
+source(paste0(getwd(), "/R/models/1 kmeans.R"))
 
 
 
@@ -28,7 +30,19 @@ nwords <- as.matrix(mapply(wordsCounter, train.corpus[,"essay"]))
 row.names(nwords) <- NULL
 
 # create tf and tf-idf dtm
-dtm.matrix <- as.matrix(nGramsMatrix (train.corpus[,"essay"], ngrams_number = 1, sparseness = 0.90))
+dtm.matrix <- as.matrix(nGramsMatrix (train.corpus[,"essay"], ngrams_number = 1, sparseness = 0.9))
+
+# full matrix for lda
+dtm.matrix.full <- as.matrix(nGramsMatrix (train.corpus[,"essay"], ngrams_number = 1, sparseness = 1))
+
+# get lda topics
+
+lda <- clusteringLDA(dtm.matrix.full, control = list(alpha = 0.1), 5)
+corpus_topics <- topics(lda)
+
+# get kmeans topics
+kmeans <- kMeansClustering(dtm.matrix.full, 5)
+corpus_clusters <- kmeans$cluster
 
 # count popular words
 
@@ -47,12 +61,16 @@ train.matrix.tf <- cbind(dtm.matrix, train.matrix.tf )
 train.matrix.tf <- cbind(nwords, train.matrix.tf)
 train.matrix.tf <- cbind(popwords, train.matrix.tf)
 train.matrix.tf <- cbind(unpopwords, train.matrix.tf)
+train.matrix.tf <- cbind(corpus_topics, train.matrix.tf)
+train.matrix.tf <- cbind(corpus_clusters, train.matrix.tf)
 train.matrix.tf <- cbind(train.corpus$domain1_score, train.matrix.tf)
 
 colnames(train.matrix.tf)[1] <- "domain1_score"
-colnames(train.matrix.tf)[2] <- "unpopwords"
-colnames(train.matrix.tf)[3] <- "popwords"
-colnames(train.matrix.tf)[4] <- "num_words" 
+colnames(train.matrix.tf)[2] <- "kmeans"
+colnames(train.matrix.tf)[3] <- "lda"
+colnames(train.matrix.tf)[4] <- "unpopwords"
+colnames(train.matrix.tf)[5] <- "popwords"
+colnames(train.matrix.tf)[6] <- "num_words" 
 
 # simple models
 

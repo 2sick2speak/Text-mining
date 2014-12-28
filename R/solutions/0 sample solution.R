@@ -44,6 +44,10 @@ corpus_topics <- topics(lda)
 kmeans <- kMeansClustering(dtm.matrix.full, 5)
 corpus_clusters <- kmeans$cluster
 
+#get ctm topics
+ctm <- ctmClustering(dtm.matrix.full, 5)
+corpus_ctm <- topics(ctm)
+
 # count popular words
 
 popwords <- as.matrix(mapply(countPopWords, list(colnames(dtm.matrix)), train.corpus$essay))
@@ -63,14 +67,16 @@ train.matrix.tf <- cbind(popwords, train.matrix.tf)
 train.matrix.tf <- cbind(unpopwords, train.matrix.tf)
 train.matrix.tf <- cbind(corpus_topics, train.matrix.tf)
 train.matrix.tf <- cbind(corpus_clusters, train.matrix.tf)
+train.matrix.tf <- cbind(corpus_ctm, train.matrix.tf)
 train.matrix.tf <- cbind(train.corpus$domain1_score, train.matrix.tf)
 
 colnames(train.matrix.tf)[1] <- "domain1_score"
-colnames(train.matrix.tf)[2] <- "kmeans"
-colnames(train.matrix.tf)[3] <- "lda"
-colnames(train.matrix.tf)[4] <- "unpopwords"
-colnames(train.matrix.tf)[5] <- "popwords"
-colnames(train.matrix.tf)[6] <- "num_words" 
+colnames(train.matrix.tf)[2] <- "ctm"
+colnames(train.matrix.tf)[3] <- "kmeans"
+colnames(train.matrix.tf)[4] <- "lda"
+colnames(train.matrix.tf)[5] <- "unpopwords"
+colnames(train.matrix.tf)[6] <- "popwords"
+colnames(train.matrix.tf)[7] <- "num_words" 
 
 # simple models
 
